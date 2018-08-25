@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"os"
 
 	"github.com/coltiebaby/og-parser/parser"
 )
 
 func main() {
-	keys := strings.Split("og:image:url", ":")[1:]
+	document, err := os.Open("./meta.html")
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	x := make(map[string]interface{})
-	key, z := parser.Fetch(keys, x)
-	parser.Set(key, z, "Colton")
-	parser.Set(key, z, "Robertson")
+	defer document.Close()
 
-	fmt.Println(x)
+	storage := make(map[string]interface{})
+	meta := parser.Parse(document, storage)
+
+	fmt.Println(meta)
 }
